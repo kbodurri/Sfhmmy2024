@@ -2,6 +2,9 @@
 ARG REPO_NAME=local_library
 FROM python:3.12
 
+# add user app
+RUN useradd -r -U -u 1000 --home /locallibrary_tutorial app
+
 # These set environment variables to prevent Python from writing pyc files 
 # and ensure that Python's standard output is sent directly to the terminal without buffering.
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -11,11 +14,11 @@ ENV PYTHONUNBUFFERED 1
 WORKDIR /locallibrary_tutorial
 
 # Copy the requirements file to the working directory
-COPY requirements.txt /locallibrary_tutorial
+COPY requirements.txt .
 
 # Install dependencies
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-# Copy the current directory contents into the container at /locallibrary_tutorial/
-COPY . /locallibrary_tutorial
+# run everythin below as app user
+USER app
