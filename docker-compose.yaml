@@ -1,0 +1,39 @@
+services:
+  # Django web application
+  web:
+    build: .
+    restart: always
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./locallibrary_tutorial:/locallibrary_tutorial
+    ports:
+      - 8000:8000
+    environment:
+      - DEBUG=1
+    depends_on:
+      - db
+    networks:
+      - locallibrary_network
+
+  # PostgreSQL database
+  db:
+    image: postgres:latest
+    container_name: PostgresDB 
+    restart: always
+    environment:
+      - POSTGRES_DB=locallibrary_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres123
+    ports:
+      - 5432:5432
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks:
+      - locallibrary_network
+   
+volumes:
+  db:
+    driver: local
+
+networks:
+  locallibrary_network:
