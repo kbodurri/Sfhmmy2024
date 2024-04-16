@@ -1,74 +1,85 @@
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-from catalog.models import Genre, Book, BookInstance, Author
-from catalog.models import Language
+from catalog.models import Genre, Book, BookInstance, Author, Language
 
 
 def create_genre(name):
-    try:
-        genre = Genre.objects.create(name=name)
+    genre, created = Genre.objects.update_or_create(
+        name__iexact=name,
+        defaults={'name': name}
+    )
+    if created:
         print(f'Created Genre: {name}')
-    except:
+    else:
         print(f'Genre already exists: {name}')
-        genre = Genre.objects.get(name=name)
     return genre
 
 
 def create_language(name):
-    try:
-        language = Language.objects.create(name=name)
+    language, created = Language.objects.update_or_create(
+        name__iexact=name,
+        defaults={'name': name}
+    )
+    if created:
         print(f'Created Language: {name}')
-    except:
+    else:
         print(f'Language already exists: {name}')
-        language = Language.objects.get(name=name)
     return language
 
 
 def create_author(first_name, last_name, birth_date, death_date):
-    try:
-        author = Author.objects.create(
-            first_name=first_name,
-            last_name=last_name,
-            date_of_birth=birth_date,
-            date_of_death=death_date
-        )
+    author, created = Author.objects.update_or_create(
+        first_name__iexact=first_name,
+        last_name__iexact=last_name,
+        defaults={
+            'first_name': first_name,
+            'last_name': last_name,
+            'date_of_birth': birth_date,
+            'date_of_death': death_date
+        }
+    )
+    if created:
         print(f'Created Author: {first_name} {last_name}')
-    except:
+    else:
         print(f'Author already exists: {first_name} {last_name}')
-        author = Author.objects.get(first_name=first_name, last_name=last_name)
     return author
 
 
 def create_book(title, author, summary, isbn, language, genres):
-    try:
-        book = Book.objects.create(
-            title=title,
-            author=author,
-            summary=summary,
-            isbn=isbn,
-            language=language
-        )
+    book, created = Book.objects.update_or_create(
+        title__iexact=title,
+        author=author,
+        defaults={
+            'title': title,
+            'author': author,
+            'summary': summary,
+            'isbn': isbn,
+            'language': language
+        }
+    )
+    if created:
+        book.genre.set(genres)
         print(f'Created Book: {title}')
-        book.genre.add(*genres)
-        print(f'Added genres to {title}')
-    except:
+    else:
         print(f'Book already exists: {title}')
-        book = Book.objects.get(title=title)
     return book
 
 
 def create_book_instance(book, imprint, due_back, status):
-    try:
-        instance = BookInstance.objects.create(
-            book=book,
-            imprint=imprint,
-            due_back=due_back,
-            status=status
-        )
+    instance, created = BookInstance.objects.update_or_create(
+        book=book,
+        imprint=imprint,
+        defaults={
+            'book': book,
+            'imprint': imprint,
+            'due_back': due_back,
+            'status': status
+        }
+    )
+    if created:
         print(f'Created Book Instance: {book.title}')
-    except:
+    else:
         print(f'Book Instance already exists: {book.title}')
-        instance = BookInstance.objects.get(book=book, imprint=imprint)
     return instance
 
 
