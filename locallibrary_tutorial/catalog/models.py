@@ -39,7 +39,7 @@ class Book(models.Model):
 
     summary = models.TextField(
         max_length=1000, help_text="Enter a brief description of the book")
-    isbn = models.CharField('ISBN', max_length=13,
+    isbn = models.CharField('ISBN', max_length=14,
                             unique=True,
                             help_text='13 Character <a href="https://www.isbn-international.org/content/what-isbn'
                                       '">ISBN number</a>')
