@@ -9,14 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-import sys
-
-# Check if extra arguments are provided
-if len(sys.argv) > 2:  # Assuming `python manage.py runserver` is the first argument
-    # Extract the extra arguments
-    extra_args = sys.argv[2:]
-    print("Extra arguments:", extra_args)
-
+import sys, os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -76,6 +69,26 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'locallibrary.wsgi.application'
 
+# Database
+# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+if os.getenv('ENABLE_SQLITE3'):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'locallibrary_db',
+            'USER': 'admin',
+            'PASSWORD': '1234',
+            'HOST': 'postgres_db',
+            'PORT': '5432',
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
