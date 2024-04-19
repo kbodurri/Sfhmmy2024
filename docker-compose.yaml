@@ -11,12 +11,12 @@ services:
       - 8000:8000
     environment:
       - DEBUG=1
+      - USE_POSTGRES=1
     depends_on:
       postgres_db:
         condition: service_healthy
     networks:
       - locallibrary_network
-
 
   # PostgreSQL database
   postgres_db:
